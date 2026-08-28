@@ -45,6 +45,30 @@ The local development package is not code-signed, so Windows may identify its pu
 
 On first launch, Settings shows storage, database, local Ollama, model, backup, and publisher readiness. AI problems are degraded—not blocking—so saved learning data and navigation remain available. **Finish setup** records acknowledgement without installing a model or changing Ollama.
 
+### Use the private GPT-OSS host
+
+When both computers are connected to the same Tailscale network, launch the packaged app with:
+
+```powershell
+.\Launch-Spanish-C1-HostAI.ps1
+```
+
+The launcher verifies `http://100.117.2.102:11434`, requires `gpt-oss-agent-64k:latest`, and starts `release\host-ai\Spanish C1 0.3.0.exe` with 8,192 tokens of context, a two-minute request timeout, and medium GPT-OSS reasoning. The reasoning trace is not parsed, displayed, or stored; only the final schema-validated JSON is accepted. Learner data remains in this repository's `data` folder, and desktop audio continues to use `release\m6-benchmark\models`.
+
+To verify the host and model without opening the app or learner database:
+
+```powershell
+.\Launch-Spanish-C1-HostAI.ps1 -CheckOnly
+```
+
+Launching the executable normally without this script continues to use the loopback `qwen3.5:4b` default.
+
+Rebuild the host-AI package without replacing the normal portable build or audio models:
+
+```powershell
+npm.cmd run dist:win:host-ai
+```
+
 ## Desktop audio
 
 - Session prompts can be played through the offline Mexican-Spanish voice.

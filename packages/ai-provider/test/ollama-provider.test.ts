@@ -5,6 +5,7 @@ import type {
   HttpTransport,
 } from '../src/contracts.js';
 import { AiProviderError } from '../src/errors.js';
+import { loadOllamaConfig } from '../src/config.js';
 import { OllamaProvider } from '../src/ollama-provider.js';
 
 const config = {
@@ -12,6 +13,7 @@ const config = {
   model: 'qwen3.5:4b',
   contextLength: 4_096,
   timeoutMs: 100,
+  think: false,
 } as const;
 
 const jsonResponse = (value: unknown, status = 200): HttpResponse => ({
@@ -105,6 +107,32 @@ describe('OllamaProvider', () => {
     });
     expect(body).toHaveProperty('format.type', 'object');
     expect(JSON.stringify(body)).toContain('Never rename, omit, or add fields');
+  });
+
+  it('passes a configured GPT-OSS thinking level without accepting the reasoning trace as content', async () => {
+    const transport = new QueueTransport([
+      jsonResponse({
+        message: {
+          thinking: 'Private model reasoning',
+          content: JSON.stringify(validProposal),
+        },
+      }),
+    ]);
+
+    const result = await new OllamaProvider({ ...config, think: 'medium' }, transport).proposeCorrection({
+      learnerText: 'Si tendría más tiempo, viajaría más.',
+    });
+
+    expect(result).toEqual(validProposal);
+    const body = JSON.parse(transport.requests[0]?.body ?? '{}') as Record<string, unknown>;
+    expect(body.think).toBe('medium');
+    expect(JSON.stringify(result)).not.toContain('Private model reasoning');
+  });
+
+  it('loads only supported Ollama thinking levels', () => {
+    expect(loadOllamaConfig({ OLLAMA_THINK: 'medium' }).think).toBe('medium');
+    expect(loadOllamaConfig({ OLLAMA_THINK: 'off' }).think).toBe(false);
+    expect(() => loadOllamaConfig({ OLLAMA_THINK: 'maximum' })).toThrowError(AiProviderError);
   });
 
   it('rejects non-JSON model content as a bad response', async () => {

@@ -5,6 +5,7 @@ export interface OllamaProviderConfig {
   readonly model: string;
   readonly contextLength: number;
   readonly timeoutMs: number;
+  readonly think: false | 'low' | 'medium' | 'high';
 }
 
 const positiveInteger = (value: string | undefined, fallback: number): number => {
@@ -13,6 +14,13 @@ const positiveInteger = (value: string | undefined, fallback: number): number =>
     throw new AiProviderError('INVALID_CONFIGURATION', 'Context length and timeout must be positive integers.');
   }
   return parsed;
+};
+
+const thinkingLevel = (value: string | undefined): OllamaProviderConfig['think'] => {
+  const normalized = (value ?? 'off').trim().toLowerCase();
+  if (normalized === 'off') return false;
+  if (normalized === 'low' || normalized === 'medium' || normalized === 'high') return normalized;
+  throw new AiProviderError('INVALID_CONFIGURATION', 'OLLAMA_THINK must be off, low, medium, or high.');
 };
 
 export const loadOllamaConfig = (
@@ -42,5 +50,6 @@ export const loadOllamaConfig = (
     model: model.trim(),
     contextLength: positiveInteger(environment.OLLAMA_CONTEXT_LENGTH, 4_096),
     timeoutMs: positiveInteger(environment.OLLAMA_TIMEOUT_MS, 30_000),
+    think: thinkingLevel(environment.OLLAMA_THINK),
   };
 };

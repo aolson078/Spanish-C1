@@ -23,7 +23,8 @@
     "test:m7:packaged": "node scripts/verify-m7-packaged-restart.mjs",
     "test:m7:upgrade": "node scripts/verify-m7-upgrade.mjs",
     "test:m7:shared-root": "node scripts/verify-m7-shared-root.mjs",
-    "dist:win": "npm run build && electron-builder --win --x64 --config.electronDist=node_modules/electron/dist"
+    "dist:win": "npm run build && electron-builder --win --x64 --config.electronDist=node_modules/electron/dist",
+    "dist:win:host-ai": "npm run build && electron-builder --win --x64 --config.electronDist=node_modules/electron/dist --config.directories.output=release/host-ai"
   },
   "build": {
     "appId": "local.spanishc1.app",

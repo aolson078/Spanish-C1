@@ -120,7 +120,7 @@ export class OllamaProvider implements AiProvider {
     const payload = {
       model: this.config.model,
       stream: false,
-      think: false,
+      think: this.config.think,
       format: responseFormat,
       options: { num_ctx: this.config.contextLength, temperature: 0 },
       messages: [
@@ -158,7 +158,7 @@ export class OllamaProvider implements AiProvider {
     const payload = {
       model: this.config.model,
       stream: false,
-      think: false,
+      think: this.config.think,
       format: assessmentResponseFormat,
       options: { num_ctx: this.config.contextLength, temperature: 0 },
       messages: [
