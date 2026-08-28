@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "ES2024",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "strict": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "rootDir": ".",
+    "outDir": "dist",
+    "sourceMap": true,
+    "types": ["node", "electron"]
+  },
+  "include": ["apps/desktop/**/*.ts", "packages/**/*.ts"],
+  "exclude": ["**/*.test.ts", "**/*.live.test.ts"]
+}

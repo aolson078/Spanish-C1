@@ -1,0 +1,17 @@
+node_modules/
+dist/
+dist-web/
+release/
+coverage/
+.env
+.env.local
+data/*
+!data/.gitkeep
+*.log
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+*.tsbuildinfo
+.DS_Store
+Thumbs.db
+.spanish-c1-electron-*/

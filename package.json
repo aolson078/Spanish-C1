@@ -1,0 +1,80 @@
+{
+  "name": "spanish-c1",
+  "version": "0.3.0",
+  "private": true,
+  "type": "module",
+  "description": "Private local-first Spanish C1 learning application",
+  "main": "dist/apps/desktop/main.js",
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "dev:web": "vite --host 127.0.0.1",
+    "build": "npm run build:web && npm run build:desktop",
+    "build:web": "vite build",
+    "build:desktop": "tsc -p tsconfig.node.json && node scripts/copy-preload.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.node.json --noEmit",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:ollama:live": "node scripts/run-live-test.mjs",
+    "test:m6:runtime": "npm run build:desktop && node scripts/verify-m6-electron-runtime.cjs",
+    "test:m6:packaged-runtime": "node scripts/verify-m6-electron-runtime.cjs --packaged",
+    "test:m7:soak": "npm run build:desktop && node scripts/verify-m7-soak.mjs",
+    "test:m7:transfer": "npm run build:desktop && node scripts/verify-m7-transfer.mjs",
+    "test:m7:recovery": "vitest run apps/desktop/recovery-coordinator.test.ts apps/desktop/recovery-mode.test.ts packages/persistence/test/portable-transfer.test.ts",
+    "test:m7:packaged": "node scripts/verify-m7-packaged-restart.mjs",
+    "test:m7:upgrade": "node scripts/verify-m7-upgrade.mjs",
+    "test:m7:shared-root": "node scripts/verify-m7-shared-root.mjs",
+    "dist:win": "npm run build && electron-builder --win --x64 --config.electronDist=node_modules/electron/dist"
+  },
+  "build": {
+    "appId": "local.spanishc1.app",
+    "productName": "Spanish C1",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "dist-web/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "scripts/audio-worker.cjs",
+        "to": "audio-worker.cjs"
+      }
+    ],
+    "asarUnpack": [
+      "node_modules/sherpa-onnx-node/**/*",
+      "node_modules/sherpa-onnx-win-x64/**/*"
+    ],
+    "win": {
+      "target": [
+        "portable"
+      ]
+    }
+  },
+  "engines": {
+    "node": ">=24.13.1"
+  },
+  "dependencies": {
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "sherpa-onnx-node": "^1.13.6",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@testing-library/dom": "10.4.1",
+    "@testing-library/jest-dom": "7.0.0",
+    "@testing-library/react": "16.3.2",
+    "@types/node": "24.13.3",
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.4",
+    "@vitejs/plugin-react": "6.1.0",
+    "@vitest/coverage-v8": "4.1.11",
+    "electron": "43.4.1",
+    "electron-builder": "26.15.3",
+    "jsdom": "30.0.1",
+    "typescript": "7.0.2",
+    "vite": "8.2.2",
+    "vitest": "4.1.11"
+  }
+}
